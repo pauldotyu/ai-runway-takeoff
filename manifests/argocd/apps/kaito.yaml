@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kaito
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://kaito-project.github.io/kaito/charts/kaito
+    chart: workspace
+    targetRevision: 0.9.0
+    helm:
+      releaseName: kaito-workspace
+      valuesObject:
+        featureGates:
+          disableNodeAutoProvisioning: true
+        nvidiaDevicePlugin:
+          enabled: false
+        localCSIDriver:
+          useLocalCSIDriver: false
+        gpu-feature-discovery:
+          gfd:
+            enabled: false
+          nfd:
+            master:
+              deploy: false
+            worker:
+              deploy: false
+        image:
+          repository: docker.io/sozercan/kaito-workspace
+          tag: v0.9.0-fix
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kaito-workspace
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
