@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: airunway-provider-kaito
+  name: airunway-kaito-provider
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"

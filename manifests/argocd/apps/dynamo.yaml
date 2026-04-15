@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: airunway-provider-dynamo-crds
+  name: airunway-dynamo-provider-crds
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -25,7 +25,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: airunway-provider-dynamo-platform
+  name: airunway-dynamo-provider
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
