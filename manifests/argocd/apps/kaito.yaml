@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://kaito-project.github.io/kaito/charts/kaito
     chart: workspace
-    targetRevision: 0.9.0
+    targetRevision: 0.10.0
     helm:
       releaseName: kaito-workspace
       valuesObject:
@@ -30,9 +30,6 @@ spec:
               deploy: false
             worker:
               deploy: false
-        image:
-          repository: docker.io/sozercan/kaito-workspace
-          tag: v0.9.0-fix
   destination:
     server: https://kubernetes.default.svc
     namespace: kaito-workspace
