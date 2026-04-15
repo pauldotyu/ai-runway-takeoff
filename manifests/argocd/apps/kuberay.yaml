@@ -10,9 +10,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://ray-project.github.io/kuberay-helm/
+    repoURL: https://ray-project.github.io/kuberay-helm
     chart: kuberay-operator
-    targetRevision: 1.3.0
+    targetRevision: 1.6.0
     helm:
       releaseName: kuberay-operator
   destination:
