@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: airunway-provider-dynamo-crds
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://helm.ngc.nvidia.com/nvidia/ai-dynamo
+    chart: dynamo-crds
+    targetRevision: 0.7.1
+    helm:
+      releaseName: dynamo-crds
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: airunway-provider-dynamo-platform
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://helm.ngc.nvidia.com/nvidia/ai-dynamo
+    chart: dynamo-platform
+    targetRevision: 0.7.1
+    helm:
+      releaseName: dynamo-platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dynamo-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
