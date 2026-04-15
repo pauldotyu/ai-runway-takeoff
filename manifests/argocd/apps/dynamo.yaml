@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://helm.ngc.nvidia.com/nvidia/ai-dynamo
     chart: dynamo-crds
-    targetRevision: 0.7.1
+    targetRevision: 0.9.1
     helm:
       releaseName: dynamo-crds
   destination:
@@ -36,7 +36,7 @@ spec:
   source:
     repoURL: https://helm.ngc.nvidia.com/nvidia/ai-dynamo
     chart: dynamo-platform
-    targetRevision: 0.7.1
+    targetRevision: 1.0.1
     helm:
       releaseName: dynamo-platform
   destination:
