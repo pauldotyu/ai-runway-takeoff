@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:pauldotyu/ai-runway-takeoff.git
+    repoURL: https://github.com/pauldotyu/ai-runway-takeoff.git
     targetRevision: HEAD
     path: manifests/apps/providers
   destination:
