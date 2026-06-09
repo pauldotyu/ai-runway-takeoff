@@ -1,0 +1,73 @@
+# Single bootstrap manifest for the AI Runway Takeoff stack.
+#
+# When forking this repo, edit ONLY the `repoURL` field below.
+# Every in-repo Application is generated from this ApplicationSet,
+# so there is no other place to update.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: airunway-takeoff
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions:
+    - missingkey=error
+  generators:
+    - list:
+        elements:
+          - name: lustre
+            path: lustre
+            syncWave: "-1"
+          - name: airunway-controller
+            path: airunway/controller
+            syncWave: "0"
+          - name: airunway-gateway
+            path: airunway/gateway
+            syncWave: "0"
+          - name: airunway-providers
+            path: airunway/providers
+            syncWave: "0"
+          - name: dependencies
+            path: argocd/apps
+            syncWave: "-2"
+  template:
+    metadata:
+      name: '{{.name}}'
+      namespace: argocd
+      annotations:
+        argocd.argoproj.io/sync-wave: '{{.syncWave}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      source:
+        # ⬇️  Change this one line when forking.
+        repoURL: https://github.com/pauldotyu/ai-runway-takeoff.git
+        targetRevision: HEAD
+        path: '{{.path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+      ignoreDifferences:
+        - kind: Secret
+          name: airunway-webhook-server-cert
+          namespace: airunway-system
+          jsonPointers:
+            - /data
+        - group: admissionregistration.k8s.io
+          kind: MutatingWebhookConfiguration
+          name: airunway-mutating-webhook-configuration
+          jqPathExpressions:
+            - .webhooks[].clientConfig.caBundle
+        - group: admissionregistration.k8s.io
+          kind: ValidatingWebhookConfiguration
+          name: airunway-validating-webhook-configuration
+          jqPathExpressions:
+            - .webhooks[].clientConfig.caBundle
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - ServerSideApply=true
+          - RespectIgnoreDifferences=true

@@ -7,8 +7,9 @@ AI Runway is a control plane that unifies multiple inference backends (Kaito, Ku
 ## Repository layout
 
 ```
-app-of-apps.yaml  # Root Argo CD Application (app-of-apps pattern)
-argocd/apps/      # Argo CD Application manifests (entry point)
+bootstrap.yaml    # ApplicationSet bootstrap (recommended; one repoURL to edit)
+app-of-apps.yaml  # Classic app-of-apps Application (alternative entry point)
+argocd/apps/      # Individual Argo CD Application manifests
 airunway/         # AI Runway controller, gateway, and inference providers
 lustre/           # Azure Lustre CSI driver manifests
 ```
@@ -27,13 +28,23 @@ lustre/           # Azure Lustre CSI driver manifests
 
 ## Usage
 
-Bootstrap by applying the root `app-of-apps` Application to a cluster that already has Argo CD installed:
+Pick **one** entry point (don't apply both — they manage the same set of Applications):
+
+**Option A — ApplicationSet (recommended, fork-friendly):**
+
+```sh
+kubectl apply -f bootstrap.yaml
+```
+
+A single `ApplicationSet` generates the in-repo Apps (`airunway-controller`, `airunway-gateway`, `airunway-providers`, `lustre`) and a `dependencies` App that syncs the upstream charts under `argocd/apps/`.
+
+**Option B — Classic app-of-apps:**
 
 ```sh
 kubectl apply -f app-of-apps.yaml
 ```
 
-This single Application points at `argocd/apps/`, which Argo CD then expands into all child apps. Each app syncs from this repo (or its upstream chart) and reconciles changes automatically.
+Points at `argocd/apps/`, which Argo CD expands into all child Apps individually.
 
 ## Updating image tags
 
@@ -41,11 +52,13 @@ Provider and controller image tags are pinned in the `kustomization.yaml` files 
 
 ## Forking
 
-Five manifests hardcode this repo's URL (`app-of-apps.yaml` and the four `airunway-*` / `lustre` Applications under `argocd/apps/`). After forking, repoint them at your fork:
+**With `bootstrap.yaml` (Option A):** edit the single `repoURL` line in `bootstrap.yaml` and you're done. All generated Applications inherit it.
+
+**With `app-of-apps.yaml` (Option B):** five manifests hardcode this repo's URL (`app-of-apps.yaml` plus the four `airunway-*` / `lustre` files under `argocd/apps/`). Rewrite them in one shot:
 
 ```sh
 git grep -l pauldotyu/ai-runway-takeoff | xargs sed -i '' 's|pauldotyu/ai-runway-takeoff|YOUR_ORG/YOUR_REPO|g'
 ```
 
-(Drop the `''` after `-i` on GNU `sed`.) Upstream Helm/Git sources in the other apps don't need to change.
+(Drop the `''` after `-i` on GNU `sed`.) Upstream Helm/Git sources don't need to change.
 
