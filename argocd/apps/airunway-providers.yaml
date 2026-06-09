@@ -1,23 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: airunway-kuberay-provider
+  name: airunway-providers
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "0"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://ray-project.github.io/kuberay-helm
-    chart: kuberay-operator
-    targetRevision: 1.6.0
-    helm:
-      releaseName: kuberay-operator
+    repoURL: https://github.com/pauldotyu/ai-runway-takeoff.git
+    targetRevision: HEAD
+    path: airunway/providers
   destination:
     server: https://kubernetes.default.svc
-    namespace: kuberay-system
+    namespace: default
   syncPolicy:
     automated:
       prune: true

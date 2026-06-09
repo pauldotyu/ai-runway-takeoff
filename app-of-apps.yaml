@@ -1,10 +1,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: airunway-controller
+  name: app-of-apps
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "-1"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -12,10 +10,10 @@ spec:
   source:
     repoURL: https://github.com/pauldotyu/ai-runway-takeoff.git
     targetRevision: HEAD
-    path: manifests/apps/controller
+    path: argocd/apps
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
