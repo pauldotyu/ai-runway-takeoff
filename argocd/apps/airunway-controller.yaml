@@ -10,9 +10,9 @@ metadata:
 spec:
   project: default
   source:
-      repoURL: https://github.com/pauldotyu/ai-runway-takeoff.git
-      targetRevision: HEAD
-      path: airunway/controller
+    repoURL: https://github.com/pauldotyu/ai-runway-takeoff.git
+    targetRevision: HEAD
+    path: airunway/controller
   destination:
     server: https://kubernetes.default.svc
     namespace: default

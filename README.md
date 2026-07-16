@@ -1,6 +1,6 @@
 # AI Runway Takeoff
 
-GitOps manifests for deploying [AI Runway](https://github.com/kaito-project/airunway) and its dependencies to a Kubernetes cluster via [Argo CD](https://argo-cd.readthedocs.io/).
+GitOps manifests for deploying [AI Runway](https://github.com/ai-runway/airunway) and its dependencies to a Kubernetes cluster via [Argo CD](https://argo-cd.readthedocs.io/).
 
 AI Runway is a control plane that unifies multiple inference backends (Kaito, KubeRay, NVIDIA Dynamo, llm-d) behind a single Gateway API surface with the [Gateway API Inference Extension](https://github.com/kubernetes-sigs/gateway-api-inference-extension).
 

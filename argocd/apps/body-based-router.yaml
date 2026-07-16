@@ -1,27 +1,30 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kuberay
+  name: body-based-router
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "-1"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://ray-project.github.io/kuberay-helm
-    chart: kuberay-operator
-    targetRevision: 1.6.1
+    name: body-based-router
+    repoURL: registry.k8s.io/gateway-api-inference-extension/charts
+    chart: body-based-routing
+    targetRevision: v1.5.0
     helm:
-      releaseName: kuberay-operator
+      releaseName: body-based-router
+      namespace: istio-system
+      valuesObject:
+        provider:
+          name: istio
   destination:
     server: https://kubernetes.default.svc
-    namespace: kuberay-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
       - ServerSideApply=true
