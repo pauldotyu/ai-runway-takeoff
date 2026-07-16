@@ -1,24 +1,23 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- dynamo.yaml
-- dynamo-pvc.yaml
-- kaito.yaml
-- kaito-podmonitor.yaml
-- kuberay.yaml
-- kuberay-podmonitor.yaml
-- llmd.yaml
-- llmd-podmonitor.yaml
+  - dynamo.yaml
+  - dynamo-pvc.yaml
+  - kaito.yaml
+  - kaito-podmonitor.yaml
+  - kuberay.yaml
+  - kuberay-podmonitor.yaml
+  - llmd.yaml
+  - llmd-podmonitor.yaml
+  - vllm.yaml
 images:
-- name: ghcr.io/ai-runway/airunway/dynamo-provider
-  newName: ghcr.io/kaito-project/airunway/dynamo-provider
-  newTag: v0.4.0
-- name: ghcr.io/ai-runway/airunway/kaito-provider
-  newName: ghcr.io/kaito-project/airunway/kaito-provider
-  newTag: v0.4.0
-- name: ghcr.io/ai-runway/airunway/kuberay-provider
-  newName: ghcr.io/kaito-project/airunway/kuberay-provider
-  newTag: v0.4.0
-- name: ghcr.io/ai-runway/airunway/llmd-provider
-  newName: ghcr.io/kaito-project/airunway/llmd-provider
-  newTag: v0.4.0
+  - name: ghcr.io/ai-runway/airunway/dynamo-provider
+    newTag: main-4e65cff27e29
+  - name: ghcr.io/ai-runway/airunway/kaito-provider
+    newTag: main-4e65cff27e29
+  - name: ghcr.io/ai-runway/airunway/kuberay-provider
+    newTag: main-4e65cff27e29
+  - name: ghcr.io/ai-runway/airunway/llmd-provider
+    newTag: main-4e65cff27e29
+  - name: ghcr.io/ai-runway/airunway/vllm-provider
+    newTag: main-4e65cff27e29

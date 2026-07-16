@@ -1,39 +1,17 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: dynamo-system
----
-apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    app.kubernetes.io/component: dynamo-provider
+    app.kubernetes.io/component: vllm-provider
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: airunway
-  name: airunway-dynamo-provider
+  name: airunway-vllm-provider
   namespace: airunway-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  labels:
-    app.kubernetes.io/name: airunway
-  name: airunway-hf-secret
-  namespace: dynamo-system
-rules:
-  - apiGroups:
-      - ""
-    resourceNames:
-      - hf-token-secret
-    resources:
-      - secrets
-    verbs:
-      - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: airunway-dynamo-provider-role
+  name: airunway-vllm-provider-role
 rules:
   - apiGroups:
       - airunway.ai
@@ -79,9 +57,9 @@ rules:
       - patch
       - update
   - apiGroups:
-      - nvidia.com
+      - apps
     resources:
-      - dynamographdeployments
+      - deployments
     verbs:
       - get
       - list
@@ -91,30 +69,22 @@ rules:
       - patch
       - delete
   - apiGroups:
-      - nvidia.com
+      - apps
     resources:
-      - dynamographdeployments/status
+      - deployments/status
     verbs:
       - get
   - apiGroups:
       - ""
     resources:
-      - persistentvolumeclaims
+      - services
     verbs:
       - get
       - list
       - watch
       - create
-      - delete
-  - apiGroups:
-      - batch
-    resources:
-      - jobs
-    verbs:
-      - get
-      - list
-      - watch
-      - create
+      - update
+      - patch
       - delete
   - apiGroups:
       - ""
@@ -137,58 +107,42 @@ rules:
       - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  labels:
-    app.kubernetes.io/name: airunway
-  name: airunway-hf-secret
-  namespace: dynamo-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: airunway-hf-secret
-subjects:
-  - kind: ServiceAccount
-    name: airunway
-    namespace: airunway-system
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: airunway-dynamo-provider-rolebinding
+  name: airunway-vllm-provider-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: airunway-dynamo-provider-role
+  name: airunway-vllm-provider-role
 subjects:
   - kind: ServiceAccount
-    name: airunway-dynamo-provider
+    name: airunway-vllm-provider
     namespace: airunway-system
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app.kubernetes.io/component: dynamo-provider
+    app.kubernetes.io/component: vllm-provider
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/name: airunway
-    control-plane: dynamo-provider
-  name: airunway-dynamo-provider
+    control-plane: vllm-provider
+  name: airunway-vllm-provider
   namespace: airunway-system
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: airunway
-      control-plane: dynamo-provider
+      control-plane: vllm-provider
   template:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
       labels:
-        app.kubernetes.io/component: dynamo-provider
+        app.kubernetes.io/component: vllm-provider
         app.kubernetes.io/name: airunway
-        control-plane: dynamo-provider
+        control-plane: vllm-provider
     spec:
       containers:
         - args:
@@ -196,7 +150,7 @@ spec:
             - --health-probe-bind-address=:8081
           command:
             - /provider
-          image: ghcr.io/ai-runway/airunway/dynamo-provider:latest
+          image: ghcr.io/ai-runway/airunway/vllm-provider:latest
           livenessProbe:
             httpGet:
               path: /healthz
@@ -233,5 +187,5 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
-      serviceAccountName: airunway-dynamo-provider
+      serviceAccountName: airunway-vllm-provider
       terminationGracePeriodSeconds: 10
